@@ -18,6 +18,7 @@ import {
 import { Link, withRouter } from "react-router-dom";
 import AnimatedModal from "./Modal";
 import "./Chat.scss";
+import ChatSettings from "./ChatSettings";
 
 const useStyles = (theme) => ({
   taskboardList: {
@@ -372,6 +373,9 @@ class Chat extends Component {
                     <strong className="text-info">
                       {this.state.selectedGroupName || "Group Name"}
                     </strong>
+                    <div className="chat-settings">
+                      <ChatSettings className="chat-settings" />
+                    </div>
                     <FormControl className={classes.taskboardList}>
                       <Select
                         labelId="demo-simple-select-label"
