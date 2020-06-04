@@ -374,7 +374,13 @@ class Chat extends Component {
                       {this.state.selectedGroupName || "Group Name"}
                     </strong>
                     <div className="chat-settings">
-                      <ChatSettings className="chat-settings" />
+                      <ChatSettings
+                        className="chat-settings"
+                        users={this.state.users}
+                        groups={this.state.groups}
+                        groupId={this.state.selectedGroupID}
+                        refreshGroups={this.refreshGroups}
+                      />
                     </div>
                     <FormControl className={classes.taskboardList}>
                       <Select

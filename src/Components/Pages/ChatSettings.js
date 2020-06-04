@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import "./ChatSettings.scss";
@@ -9,115 +9,9 @@ import TextField from "@material-ui/core/TextField";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 
-import SHA1 from "../../services/sha1";
-
-// import {
-//   useInputValue,
-//   useParticipants,
-// } from "../Participant-Components/Participants-custom-hooks";
-// import AddParticipant from "../Participant-Components/AddParticipant";
-// import ParticipantList from "../Participant-Components/ParticipantList";
+//import SHA1 from "../../services/sha1";
 
 import { db } from "../../services/firebase";
-
-// const AddGroupParticipant = memo((props) => {
-//   const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
-//   const {
-//     //participants,
-//     addParticipants,
-//     checkParticipants,
-//     removeParticipants,
-//   } = useParticipants(props);
-//   const clearInputAndAddParticipant = (_) => {
-//     const userExists = () => {
-//       let userEx = false;
-
-//       let uid = null;
-
-//       for (let [k, v] of props.users) {
-//         //console.log("Key: " + k);
-//         //console.log("Value: " + v);
-//         if (v.email === inputValue || v.name === inputValue) {
-//           userEx = true;
-//           uid = k;
-//         }
-//       }
-//       return {
-//         userExists: userEx,
-//         userID: uid,
-//       };
-//     };
-
-//     clearInput();
-//     addParticipants(inputValue, userExists());
-//   };
-//   return (
-//     <div>
-//       <AddParticipant
-//         inputValue={inputValue}
-//         onInputChange={changeInput}
-//         onButtonClick={clearInputAndAddParticipant}
-//         onInputKeyPress={(event) =>
-//           keyInput(event, clearInputAndAddParticipant)
-//         }
-//       />
-//       <ParticipantList
-//         items={props.participants}
-//         onItemCheck={(idx) => checkParticipants(idx)}
-//         onItemRemove={(idx) => removeParticipants(idx)}
-//       />
-//     </div>
-//   );
-// });
-
-// const AddGroupLeader = memo((props) => {
-//   const { inputValue, changeInput, clearInput, keyInput } = useInputValue();
-//   const {
-//     //participants,
-//     addParticipants,
-//     checkParticipants,
-//     removeParticipants,
-//   } = useParticipants(props);
-//   const clearInputAndAddParticipant = (_) => {
-//     const userExists = () => {
-//       let userEx = false;
-//       let uid = null;
-
-//       for (let [k, v] of props.users) {
-//         //console.log("Key: " + k);
-//         //console.log("Value: " + v);
-//         if (v.email === inputValue || v.name === inputValue) {
-//           userEx = true;
-//           uid = k;
-//         }
-//       }
-//       return {
-//         userExists: userEx,
-//         userID: uid,
-//       };
-//     };
-
-//     clearInput();
-//     addParticipants(inputValue, userExists());
-//   };
-//   return (
-//     <div>
-//       <AddParticipant
-//         inputValue={inputValue}
-//         onInputChange={changeInput}
-//         onButtonClick={clearInputAndAddParticipant}
-//         onInputKeyPress={(event) =>
-//           keyInput(event, clearInputAndAddParticipant)
-//         }
-//       />
-//       <ParticipantList
-//         items={props.participants}
-//         onItemCheck={(idx) => checkParticipants(idx)}
-//         onItemRemove={(idx) => removeParticipants(idx)}
-//       />
-//     </div>
-//   );
-// });
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -140,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AnimatedModal(props) {
+export default function ChatSettings(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -150,28 +44,28 @@ export default function AnimatedModal(props) {
   const [groupName, setGroupName] = useState("");
   const [groupDesc, setGroupDesc] = useState("");
 
-  const [participants, setParticipants] = useState([]);
-  const [leaders, setLeaders] = useState([]);
+  // const [participants, setParticipants] = useState([]);
+  // const [leaders, setLeaders] = useState([]);
 
-  const [groups, setGroups] = useState(new Map());
+  //const [groups, setGroups] = useState(new Map());
 
-  useEffect(() => {
-    try {
-      db.ref("groups").on("value", (snapshot) => {
-        let groups_temp = new Map();
-        snapshot.forEach((snap) => {
-          groups_temp.set(snap.key, snap.val());
-        });
-
-        setGroups(groups_temp);
-      });
-    } catch (error) {
-      setSaveError(error.message);
-    }
-    return () => {
-      db.ref("groups").off("value");
-    };
-  }, []);
+  // useEffect(() => {
+  //   try {
+  //     db.ref("groups").on("value", (snapshot) => {
+  //       let groups_temp = new Map();
+  //       snapshot.forEach((snap) => {
+  //         groups_temp.set(snap.key, snap.val());
+  //       });
+  //
+  //       setGroups(groups_temp);
+  //     });
+  //   } catch (error) {
+  //     setSaveError(error.message);
+  //   }
+  //   return () => {
+  //     db.ref("groups").off("value");
+  //   };
+  // }, []);
 
   const handleOpen = () => {
     setOpen(true);
@@ -189,79 +83,72 @@ export default function AnimatedModal(props) {
     setGroupDesc(event.target.value);
   };
 
+  // const handleLeaderChange = (event) => {};
+
   const handleSaveGroup = (event) => {
     setSavingGroup(true);
     setSaveError(null);
 
     try {
-      let groupID = SHA1.hash(groupName);
+      //let groupID = SHA1.hash(groupName);
+      db.ref("groups/" + props.groupId).update({
+        name: groupName,
+        description: groupDesc,
+        //id: groupID,
+      });
 
-      if (!groups.has(groupID)) {
-        db.ref("groups/" + groupID).update({
-          name: groupName,
-          description: groupDesc,
-          id: groupID,
-        });
-
-        /* Template db call for storing chats to a group
+      /* Template db call for storing chats to a group
         db.ref("groups/6c48a6eadfed63a0af3e39eb36911e24b4e356de/chats/").push({
           content: this.state.content,
           timestamp: Date.now(),
           uid: this.state.user.uid,
         });
         */
-
-        for (let i = 0; i < participants.length; ++i) {
-          if (
-            participants[i].registered === true &&
-            participants[i].checked === true
-          ) {
-            let displayName = props.users.get(participants[i].uid).name;
-
-            if (props.users.get(participants[i].uid).name === undefined) {
-              displayName = props.users.get(participants[i].uid).email;
-            }
-
-            db.ref(`groups/${groupID}/members/${participants[i].uid}`).update({
-              displayName: displayName,
-              groupAccess: "member",
-            });
-
-            db.ref(`users/${participants[i].uid}/groups/${groupID}`).update({
-              displayName: displayName,
-              groupAccess: "member",
-            });
-          }
-        }
-
-        for (let i = 0; i < leaders.length; ++i) {
-          if (leaders[i].registered === true && leaders[i].checked === true) {
-            let displayName = props.users.get(leaders[i].uid).name;
-
-            if (props.users.get(leaders[i].uid).name === undefined) {
-              displayName = props.users.get(leaders[i].uid).email;
-            }
-            db.ref(`groups/${groupID}/members/${leaders[i].uid}`).update({
-              displayName: displayName,
-              groupAccess: "leader",
-            });
-            db.ref(`users/${leaders[i].uid}/groups/${groupID}`).update({
-              displayName: displayName,
-              groupAccess: "leader",
-            });
-          }
-        }
-
-        props.refreshGroups();
-
-        setSavingGroup(false);
-        setOpen(false);
-        setParticipants([]);
-        setLeaders([]);
-      } else {
-        setSavingGroup(false);
-        setSaveError("Group exists");
-      }
+      //
+      // for (let i = 0; i < participants.length; ++i) {
+      //   if (
+      //     participants[i].registered === true &&
+      //     participants[i].checked === true
+      //   ) {
+      //     let displayName = props.users.get(participants[i].uid).name;
+      //
+      //     if (props.users.get(participants[i].uid).name === undefined) {
+      //       displayName = props.users.get(participants[i].uid).email;
+      //     }
+      //
+      //     db.ref(`groups/${groupID}/members/${participants[i].uid}`).update({
+      //       displayName: displayName,
+      //       groupAccess: "member",
+      //     });
+      //
+      //     db.ref(`users/${participants[i].uid}/groups/${groupID}`).update({
+      //       displayName: displayName,
+      //       groupAccess: "member",
+      //     });
+      //   }
+      // }
+      //
+      // for (let i = 0; i < leaders.length; ++i) {
+      //   if (leaders[i].registered === true && leaders[i].checked === true) {
+      //     let displayName = props.users.get(leaders[i].uid).name;
+      //
+      //     if (props.users.get(leaders[i].uid).name === undefined) {
+      //       displayName = props.users.get(leaders[i].uid).email;
+      //     }
+      //     db.ref(`groups/${groupID}/members/${leaders[i].uid}`).update({
+      //       displayName: displayName,
+      //       groupAccess: "leader",
+      //     });
+      //     db.ref(`users/${leaders[i].uid}/groups/${groupID}`).update({
+      //       displayName: displayName,
+      //       groupAccess: "leader",
+      //     });
+      //   }
+      // }
+      setSavingGroup(false);
+      setOpen(false);
+      // setParticipants([]);
+      // setLeaders([]);
     } catch (error) {
       setSaveError(error);
     }
@@ -291,7 +178,7 @@ export default function AnimatedModal(props) {
               <h2 className="header">Update Group Settings</h2>
             </div>
             <div className="new_group_details">
-              <h6 className="update_details_headers">Update Group Name:</h6>
+              <h6 className="update_details_headers">Update Group Name: </h6>
               <TextField
                 className="new_group_name"
                 onChange={handleNameChange}
