@@ -61,6 +61,10 @@ export function createTask(columnId, task) {
   return db.ref(`tasks/${columnId}`).push(task);
 }
 
+export function assignMember(columnId, taskId, member) {
+  return db.ref(`tasks/${columnId}/${taskId}/member`).push(member);
+}
+
 export function createTaskTodo(columnId, taskId, todo) {
   return db.ref(`tasks/${columnId}/${taskId}/todos`).push(todo);
 }
