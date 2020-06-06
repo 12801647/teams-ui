@@ -30,6 +30,12 @@ const TaskAssign = ({ columnId, taskDetails }) => {
       return;
     }
     try {
+      for (let i = 0; i < members.length; i++) {
+        if (members[i].text === newMember) {
+          setNewMember("");
+          return;
+        }
+      }
       await addMember(columnId, taskDetails.id, { text: newMember });
       setNewMember("");
     } catch (err) {
